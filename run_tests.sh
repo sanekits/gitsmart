@@ -1,7 +1,12 @@
 #!/bin/bash
 # run_tests.sh  Runs all test/*/run_test.sh scripts
 
-scriptName=$(readlink -f $0)
+canonpath() {
+    # Like "readlink -f", but portable
+    ( cd -L -- "$(command dirname -- $0)"; echo "$(command pwd -P)/$(command basename -- $0)" )
+}
+
+scriptName=$(canonpath $0)
 scriptDir=$(dirname -- ${scriptName})
 
 die() {
