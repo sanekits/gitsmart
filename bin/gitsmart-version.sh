@@ -14,5 +14,5 @@ Scriptdir=$(dirname -- "$Script")
 
 
 if [ -z "$sourceMe" ]; then
-    printf "%s\t%s" ${Scriptdir}/gitsmart ${GitsmartVersion}
+    printf "%s\t%s\n" ${Scriptdir}/gitsmart ${GitsmartVersion}
 fi
