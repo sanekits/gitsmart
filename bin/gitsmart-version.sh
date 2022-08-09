@@ -4,8 +4,6 @@
 # get the home install path for the tool
 Ps1FooVersion=0.5.0
 
-set -e
-
 canonpath() {
     # Like "readlink -f", but portable
     ( cd -L -- "$(command dirname -- $0)"; echo "$(command pwd -P)/$(command basename -- $0)" )
