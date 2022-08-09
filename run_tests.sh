@@ -3,7 +3,7 @@
 
 canonpath() {
     # Like "readlink -f", but portable
-    ( cd -L -- "$(command dirname -- $0)"; echo "$(command pwd -P)/$(command basename -- $0)" )
+    ( cd -L -- "$(command dirname -- ${1})"; echo "$(command pwd -P)/$(command basename -- ${1})" )
 }
 
 scriptName=$(canonpath $0)
