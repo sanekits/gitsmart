@@ -81,7 +81,7 @@ git_diff_fancy() {
 }
 
 git_log_more() {
-    #help List colored git log detial in pager
+    #help List colored git log detail in pager
     git log --stat --color "$@" | less --tabs=4 -RFXS
 }
 
