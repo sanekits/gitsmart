@@ -13,7 +13,7 @@ stub() {
    builtin echo "  <<< STUB[$*] >>> " >&2
 }
 main() {
-    ${scriptDir}/gitsmart/shellkit/shellkit-help.sh ${script}/gitsmart/gitsmart.bashrc
+    ${scriptDir}/shellkit/shellkit-help.sh ${script}/gitsmart/gitsmart.bashrc
 }
 
 [[ -z ${sourceMe} ]] && main "$@"
