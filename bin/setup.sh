@@ -21,7 +21,9 @@ die() {
 main() {
     Script=${scriptName} main_base "$@"
     cd ${HOME}/.local/bin || die 208
-    ln -sf ${Kitname}/gitsmart-help.sh ./
+    for item in gitsmart-help.sh git-remote-show-urls.sh; do
+        ln -sf ${Kitname}/${item} ./
+    done
 }
 
 [[ -z ${sourceMe} ]] && main "$@"
