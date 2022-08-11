@@ -21,6 +21,7 @@ main() {
             cd $(dirname ${test_script}) || die 102
             echo "Running tests in $PWD:"
             ./run_test.sh
+            echo "${test_script} passed: OK"
         ) || die "Failed in $test_script"
     done
     echo "All tests passed."

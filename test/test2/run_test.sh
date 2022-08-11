@@ -13,7 +13,9 @@ stub() {
    builtin echo "  <<< STUB[$*] >>> " >&2
 }
 main() {
-    ${scriptDir}/../../shellkit/docker-test.sh || die docker-test.sh returned failure
+    # TEST_DIR gets mounted as /test_dir:ro, and we can set our INNER_TEST_SCRIPT thereby
+
+    INNER_TEST_SCRIPT=inner-test.sh TEST_DIR=${scriptDir} ${scriptDir}/../../shellkit/docker-test.sh || die docker-test.sh returned failure
 
     builtin echo "args:[$*]"
 }
