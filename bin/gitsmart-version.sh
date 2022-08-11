@@ -2,7 +2,7 @@
 
 # Running {Kitname}-version.sh is the correct way to
 # get the home install path for the tool
-GitsmartVersion=0.2.0
+GitsmartVersion=0.2.1
 
 canonpath() {
     # Like "readlink -f", but portable
