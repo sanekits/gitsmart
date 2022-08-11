@@ -21,6 +21,7 @@ die() {
 main() {
     Script=${scriptName} main_base "$@"
     cd ${HOME}/.local/bin || die 208
+    ln -sf ${Kitname}/gitsmart-help.sh ./
 }
 
 [[ -z ${sourceMe} ]] && main "$@"

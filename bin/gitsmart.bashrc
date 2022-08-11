@@ -7,7 +7,7 @@ gitsmart-semaphore() {
 
 
 git-find-root() {
-    # Show the root of the current repo
+    #help Shows the root path for current repo
     command git rev-parse --show-toplevel 2>/dev/null
 }
 
@@ -21,6 +21,7 @@ parse_git_branch() {
     }
 
 git_commit_review() {
+    #help Review commits before adding to index
     ( command which code && command code -s | command grep -q Version ) &>/dev/null
     [[ $? -ne 0 ]] && {
         echo "Sorry, vscode not running."; false; return;
@@ -38,6 +39,7 @@ git_commit_review() {
 alias gcr='git_commit_review'
 
 git_remote_show() {
+    #help Show all remotes
     local allremotes="$(command git remote show)"
     local remotes="$@"
     remotes=${remotes:-${allremotes}}  # Get all remotes if caller doesn't specify
