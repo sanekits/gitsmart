@@ -1,5 +1,9 @@
-#!/bin/bash gitsmart.rc
+#!/bin/bash gitsmart.bashrc
 
+gitsmart-semaphore() {
+    # shellkit setup requires this semaphore
+    true
+}
 
 
 git-find-root() {
