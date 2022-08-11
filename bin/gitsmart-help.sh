@@ -31,7 +31,7 @@ parse_help_items() {
 }
 
 main() {
-    cat ${scriptDir}/gitsmart.bashrc | parse_help_items
+    cat ${scriptDir}/gitsmart.bashrc ${scriptDir}/gitsmart/gitsmart.bashrc 2>/dev/null | parse_help_items
 }
 
 [[ -z ${sourceMe} ]] && main "$@"
