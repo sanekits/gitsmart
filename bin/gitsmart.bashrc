@@ -71,6 +71,7 @@ git_branch_diff_file() {
 }
 
 git_diff_fancy() {
+    #help Use diff-so-fancy to view git diff output
     if which diff-so-fancy &>/dev/null; then
         # Use diff-so-fancy and less to magicalize it:
         command git diff --color "$@" | diff-so-fancy | less --tabs=4 -RFXS --pattern '^(Date|added|deleted|modified): '
@@ -80,16 +81,17 @@ git_diff_fancy() {
 }
 
 git_log_more() {
-    # More detail in git log
+    #help List colored git log detial in pager
     git log --stat --color "$@" | less --tabs=4 -RFXS
 }
 
 git_remote_view() {
+    #help List git remotes (alias:grv)
     git remote -v | grep -v \(push\) | sed -e "s/(fetch)//" -e "s/git@bbgithub.dev.bloomberg.com/bbgh/" | cat -n
 }
 
 git_do_recursive() {
-    # Run $@ as command for current dir and all immediate children containing .git dirs
+    #help Recursive $@ for all child git working copies
     local line;
     while read line; do
         if [[ $line == .git ]]; then
