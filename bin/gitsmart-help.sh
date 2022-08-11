@@ -14,7 +14,7 @@ stub() {
 }
 main() {
     set -x
-    ${scriptDir}/shellkit/shellkit-help.sh ${scriptDir}/gitsmart/gitsmart.bashrc
+    ${scriptDir}/shellkit/shellkit-help.sh ${scriptDir}/gitsmart.bashrc
 }
 
 [[ -z ${sourceMe} ]] && main "$@"
