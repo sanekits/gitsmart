@@ -1,12 +1,7 @@
 #!/bin/bash
 # gitsmart-help.sh
 
-canonpath() {
-    # Like "readlink -f", but portable
-    ( cd -L -- "$(dirname -- $0)"; echo "$(pwd -P)/$(basename -- $0)" )
-}
-
-scriptName="$(canonpath $0)"
+scriptName="$(command readlink -f $0)"
 scriptDir=$(command dirname -- "${scriptName}")
 
 die() {
@@ -17,22 +12,8 @@ die() {
 stub() {
    builtin echo "  <<< STUB[$*] >>> " >&2
 }
-
-parse_help_items() {
-    # Given a stream of shell text with #help markers, print a "help item" for
-    # each.
-    while read line; do
-        echo -n $line | tr -d '(){' | sed -e 's/^function //'
-        read helptext
-        echo "$helptext" | sed -s 's/^\s*#help/\t/'
-        read _
-    done < <(command grep -E -B1 '\s*#help ')
-
-}
-
 main() {
-    cat ${scriptDir}/gitsmart.bashrc ${scriptDir}/gitsmart/gitsmart.bashrc 2>/dev/null | parse_help_items
+    ${scriptDir}/gitsmart/shellkit/shellkit-help.sh ${script}/gitsmart/gitsmart.bashrc
 }
 
 [[ -z ${sourceMe} ]] && main "$@"
-
