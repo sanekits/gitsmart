@@ -3,3 +3,6 @@
 gitsmart-help.sh
 git-remote-show-urls.sh
 git-make-child-clone.sh
+git-log-compact
+git-wc-inventory
+git-wc-inventory-mark-done
