@@ -55,7 +55,6 @@ parseArgs() {
     ORIG_DIR=$PWD
     command git --version &>/dev/null || die "No git available"
     SOURCE_ROOT_DIR=$( command git rev-parse --show-toplevel 2>/dev/null )
-    [[ -z $SOURCE_ROOT_DIR ]] && die "$PWD is not from a git working copy"
 
     while [[ -n $1 ]]; do
         case $1 in
@@ -70,6 +69,7 @@ parseArgs() {
         esac
         shift
     done
+    [[ -z $SOURCE_ROOT_DIR ]] && die "$PWD is not from a git working copy"
     [[ -z $DEST_DIR ]] && {
         DEST_DIR=/tmp/$(basename -- "$ORIG_DIR" )
         [[ -z $DEST_DIR ]] && die "Failed to create temp dest dir"

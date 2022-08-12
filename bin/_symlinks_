@@ -1,8 +1,8 @@
 # List of paths in .local/bin/{Kitname}/ which get symlinked to
 # .local/bin on setup
 gitsmart-help.sh
-git-remote-show-urls.sh
-git-make-child-clone.sh
+git-remote-show-urls.sh #help Print remote httpx URLs for working copy
+git-make-child-clone.sh #help@ git-make-child-clone.sh --help
 git-log-compact
-git-wc-inventory
+git-wc-inventory #help@ $SHELLKIT_HELP_SYMBOL --help
 git-wc-inventory-mark-done
