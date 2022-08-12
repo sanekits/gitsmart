@@ -21,10 +21,6 @@ die() {
 main() {
     Script=${scriptName} main_base "$@"
     cd ${HOME}/.local/bin || die 208
-    builtin read -a < $( command cat ${scriptDir}/_symlinks_ | command tr '\n' ' ' )
-    for item in ${_symlinks[*]}; do
-        ln -sf ${Kitname}/${item} ./
-    done
 }
 
 [[ -z ${sourceMe} ]] && main "$@"

@@ -1,3 +1,5 @@
+# List of paths in .local/bin/{Kitname}/ which get symlinked to
+# .local/bin on setup
 gitsmart-help.sh
 git-remote-show-urls.sh
 git-make-child-clone.sh
