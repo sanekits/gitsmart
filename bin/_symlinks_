@@ -11,3 +11,9 @@
 #   my-script.sh #help@ ${SHELLKIT_HELP_SYMBOL} --help
 #
 gitsmart.sh
+git-make-child-clone.sh
+git-remote-show-urls.sh
+git-wc-inventory
+git-wc-inventory-mark-done
+gitsmart-help.sh
+git-log-compact
