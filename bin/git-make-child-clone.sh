@@ -9,6 +9,8 @@
 #
 SCRIPT=$(basename $(readlink -f -- $0))
 
+do_reset=false
+
 die() {
     builtin echo "ERROR: $*" >&2
     exit 1
@@ -46,8 +48,9 @@ statusmsg() {
 }
 
 do_help() {
-    echo "$(basename $0) <destination-dir>"
+    echo "$(basename $0) <destination-dir> {--reset}"
     echo "   -> If destination-dir not specified, a temp dir is created."
+    echo "   -> Remove and rewrite destination dir with --reset (DANGER)"
 }
 
 
@@ -61,6 +64,9 @@ parseArgs() {
             -h|--help)
                  do_help "$@"
                 exit 1
+                ;;
+            -r|--reset)
+                do_reset=true
                 ;;
             *)
                 [[ -n $DEST_DIR ]] && die "Bad argument: $1"
@@ -82,6 +88,13 @@ main() {
 
     [[ -d .git ]] || die "No .git in this dir"
     local branch=$(git symbolic-ref HEAD --short)
+
+    $do_reset && {
+        [[ -d "$DEST_DIR" ]] && {
+            echo "$DEST_DIR exists, destroying because you said --reset!" >&2
+            rm -rf "$DEST_DIR"
+        }
+    }
 
     command mkdir -p $DEST_DIR
     [[ -d $DEST_DIR ]] || die 102
