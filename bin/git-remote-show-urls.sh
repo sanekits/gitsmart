@@ -8,7 +8,10 @@ die() {
 
 match_subst_urls() {
     # match entries are [pattern] [result]
-    command sed -e 's%git@bbgithub\.dev\.bloomberg\.com:%https://bbgithub.dev.bloomberg.com/%' -e 's%git@github\.com:%https://github.com/%'
+    command sed  \
+        -e 's%git@bbgithub\.dev\.bloomberg\.com:%https://bbgithub.dev.bloomberg.com/%' \
+        -e 's%git@github\.com:%https://github.com/%' \
+        -e 's% bbgithub:% https://bbgithub.dev.bloomberg.com/%'
 }
 
 translate_entry_url() {
