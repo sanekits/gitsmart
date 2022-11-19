@@ -11,6 +11,7 @@
 #   my-script.sh #help@ ${SHELLKIT_HELP_SYMBOL} --help
 #
 gitsmart.sh
+git-dirty # Exit 0 if any dir in arglist is dirty
 git-make-child-clone.sh
 git-remote-show-urls.sh
 git-wc-inventory

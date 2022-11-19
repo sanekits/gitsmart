@@ -28,7 +28,7 @@ stub() {
    builtin echo "  <<< STUB[$*] >>> " >&2
 }
 main() {
-    builtin echo "Hello gitsmart, shellkit edition: args:[$*]"
+    gitsmart-help.sh "$@"
 }
 
 [[ -z ${sourceMe} ]] && {
