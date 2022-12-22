@@ -113,8 +113,14 @@ git_commit_sync() {
     if [[ $# -gt 0 ]]; then
         msg="$@"
     fi
+    local record_event=false
     command git commit -am "$msg"
-    command git push
+    [[ $? -eq 0 ]] \
+        && record_event=true
+    command git push \
+        && record_event=true
+    $record_event \
+        && history -s "[gpa] git_commit_sync \"$msg\" # from $(git-find-root)"
 }
 
 if $isBash; then
