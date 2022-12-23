@@ -107,20 +107,35 @@ git_do_recursive() {
 alias gdr=git_do_recursive
 
 git_commit_sync() {
-    # If arg is supplied, that's our commit message.  Otherwise the msg
-    # is just 'Sync (auto)'
+    local fwdArgs=()
+    local edit_commit_msg=false
+    local record_event=true
     local msg="Sync (auto)"
-    if [[ $# -gt 0 ]]; then
-        msg="$@"
+    local result
+    while [[ -n "$1" ]]; do
+        case "$1" in
+            -e|--edit)  edit_commit_msg=true ;;
+            -n|--no-history) record_event=false;;
+            *)  fwdArgs+=( "$1" )
+        esac
+        shift
+    done
+    if [[ ${#fwdArgs} -gt 0 ]]; then
+        msg="${fwdArgs[@]}"
     fi
-    local record_event=false
-    command git commit -am "$msg"
-    [[ $? -eq 0 ]] \
-        && record_event=true
-    command git push \
-        && record_event=true
+    local kargs=( "-a" )
+    $edit_commit_msg \
+        && kargs+=( "--edit" )
+
+    command git commit ${kargs[@]} -m "${msg}"
+    [[ $? -eq 0 ]] && result=true || result=false
+
+    $result \
+        && { command git push || result=false ; }
+
     $record_event \
         && history -s "[gpa] git_commit_sync \"$msg\" # from $(git-find-root)"
+    $result
 }
 
 if $isBash; then
