@@ -133,7 +133,7 @@ git_commit_sync() {
     $result \
         && { command git push || result=false ; }
     $record_event \
-        && history -s "[gpa] git_commit_sync \"$msg\" # from $(git-find-root)"
+        && history -s "[gpa] git_commit_sync \"$msg\" #$(git rev-parse --short=9 HEAD) from $(git-find-root)"
     $result
 }
 
