@@ -116,6 +116,7 @@ git_commit_sync() {
         case "$1" in
             -e|--edit)  edit_commit_msg=true ;;
             -n|--no-history) record_event=false;;
+            -h|--help) echo "Commit and push in one step.  -e to edit message, -n to suppress history recording" ; return ;;
             *)  fwdArgs+=( "$1" )
         esac
         shift
