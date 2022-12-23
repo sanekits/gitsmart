@@ -130,10 +130,8 @@ git_commit_sync() {
 
     command git commit ${kargs[@]} -m "${msg}"
     [[ $? -eq 0 ]] && result=true || result=false
-
     $result \
         && { command git push || result=false ; }
-
     $record_event \
         && history -s "[gpa] git_commit_sync \"$msg\" # from $(git-find-root)"
     $result
