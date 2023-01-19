@@ -188,10 +188,24 @@ if [[ -n $PS1 ]]; then
     fi
 fi
 
-gitgrep() {
-    # Find files in git repo matching pattern $1
-    git ls-files | grep -E "$@"
+gitgrep_f() {
+    # Find files in git repo matching filename pattern $@
+    git ls-files | grep -sE "$@"
     set +f
 }
-alias gitg='set -f; gitgrep'
 
+gitgrep_t() {
+    # Find files in git repo matching text pattern $@
+    while read file; do
+        grep -snE "$@" "${file}" | sed "s%^%${file}#%"
+    done < <(git ls-files .)
+    set +f
+}
+
+alias gitg='set -f; gitgrep_f'
+#help Search filenames in git for pattern $@
+
+alias gitgt='set -f; gitgrep_t'
+#help Search content of git files for pattern $@
+
+true
