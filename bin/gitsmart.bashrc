@@ -52,6 +52,7 @@ git_show_urls() {
     git-remote-show-urls.sh "$@"
 }
 alias gurl=git_show_urls
+#help Show URLs for this repo
 
 git_attributes_init() {
     [[ -d .git ]] || return $(errExit No .git/ here)
@@ -90,7 +91,6 @@ git_remote_view() {
 }
 
 git_do_recursive() {
-    #help Recursive $@ for all child git working copies
     local line;
     while read line; do
         if [[ $line == .git ]]; then
@@ -105,6 +105,8 @@ git_do_recursive() {
     done < <( command ls -d */.git)
 }
 alias gdr=git_do_recursive
+#help Recursive $@ for all child git working copies
+
 
 git_commit_sync() {
     local fwdArgs=()
@@ -153,6 +155,7 @@ git_branches_all() {
     set +f
 }
 
+
 # Script-worthy git-status: check the branch, parseable output, etc.
 # See-also: git-dirty
 if [[ -n $PS1 ]]; then
@@ -174,6 +177,8 @@ if [[ -n $PS1 ]]; then
     alias glm=git_log_more
     alias grv=git_remote_view
     alias glc='git-log-compact --decorate'
+    alias grvh='git-reset-very-hard.sh'
+    #help Reset working-copy and delete untracked files
     if type -t _complete_alias &>/dev/null; then
         complete -F _complete_alias gco
         complete -F _complete_alias gb

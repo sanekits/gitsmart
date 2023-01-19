@@ -18,3 +18,4 @@ git-wc-inventory
 git-wc-inventory-mark-done
 gitsmart-help.sh
 git-log-compact
+git-reset-very-hard.sh  # Reset to ref=\$1 and delete untracked files
