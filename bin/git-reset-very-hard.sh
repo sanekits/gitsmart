@@ -15,6 +15,10 @@ do_reset_very_hard() {
     [[ ${#args[@]} -eq 0 ]] \
         && args=( HEAD )
     set -ue
+    local wcRoot=$( git rev-parse --show-toplevel 2> /dev/null )
+    [[ -d $wcRoot ]] \
+        || die "Failed looking for working-copy root"
+    cd -- "$wcRoot"
     [[ -d .git ]] \
         || die "Not a .git working tree: $PWD"
     if git-dirty &>/dev/null; then :

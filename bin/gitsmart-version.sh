@@ -2,7 +2,7 @@
 
 # Running gitsmart-version.sh is the correct way to
 # get the home install path for the tool
-KitVersion=0.5.4
+KitVersion=0.5.6
 
 canonpath() {
     builtin type -t realpath.sh &>/dev/null && {

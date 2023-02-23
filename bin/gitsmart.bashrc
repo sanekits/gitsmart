@@ -208,4 +208,8 @@ alias gitg='set -f; gitgrep_f'
 alias gitgt='set -f; gitgrep_t'
 #help Search content of git files for pattern $@
 
+alias git-merge-safe='git merge --no-ff --no-commit'
+#help Merge without commit or fast-forward
+alias gms=git-merge-safe
+
 true
