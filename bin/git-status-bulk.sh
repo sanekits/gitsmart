@@ -65,15 +65,20 @@ pageinit() {
     fi
 }
 
+git_find_root() {
+    git rev-parse --show-toplevel 2>/dev/null
+}
+
 
 VisitedDirs=  # Colon-delimited+canonicalized, to prevent dupes
 visitedMunge ()
 {
     [[ -n "$1" ]] || return;  # Return false because no arg provided
+    local wc_root=$(git_find_root "$1")
     case ":${VisitedDirs}:" in
-        *:"$1":*) false; return ;;  # Return false because this dir is nothing new
+        *:"${wc_root}":*) false; return ;;  # Return false because this dir is nothing new
         *)
-            VisitedDirs=$VisitedDirs:$1;
+            VisitedDirs=$VisitedDirs:${wc_root};
         ;;
     esac
     true  # We didn't bail out so this is new
