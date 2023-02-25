@@ -74,7 +74,7 @@ VisitedDirs=  # Colon-delimited+canonicalized, to prevent dupes
 visitedMunge ()
 {
     [[ -n "$1" ]] || return;  # Return false because no arg provided
-    local wc_root=$(git_find_root "$1")
+    local wc_root=$(cd "$1" && git_find_root )
     case ":${VisitedDirs}:" in
         *:"${wc_root}":*) false; return ;;  # Return false because this dir is nothing new
         *)
