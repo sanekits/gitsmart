@@ -6,6 +6,7 @@
 #   - Run 'git-status' with pretty output if terminal attached
 #   - Page output if terminal attached and 'less' installed
 #   - Options --color or --nocolor to force ansi state
+#   - Use --wc-list to just print the canonicalized/unique working copy list
 
 scriptName="$(readlink -f "$0")"
 scriptDir=$(command dirname -- "${scriptName}")
@@ -107,10 +108,15 @@ foreach_dir() {
     done
 }
 
+do_nothing() {
+    :
+}
 
 [[ -z ${sourceMe} ]] && {
 
     RawDirs=()
+
+    wc_list_only=false # --wc-list option
 
     # Default ansi color handling:
     [[ -t 1 ]] && colorsinit true || colorsinit false;
@@ -120,12 +126,17 @@ foreach_dir() {
         case $1 in
             --color) colorsinit true;;
             --nocolor) colorsinit false;;
+            --wc-list) wc_list_only=true;;
             *)
                 RawDirs+=( $1 );;
         esac
         shift
     done
-
+    if $wc_list_only; then
+        foreach_dir do_nothing "${RawDirs[@]}"
+        echo "${VisitedDirs[@]}" | tr ':' '\n' | grep -v '^$'
+        exit
+    fi
     foreach_dir do_gitstatus "${RawDirs[@]}" | pager
 
     builtin exit
