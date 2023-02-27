@@ -145,12 +145,19 @@ fi
 
 git_branches_all() {
     # Show branches sorted by date (newest last).  If args are provided, we'll pass them as a pattern to grep
+    local sort_by_date=${SortByDate:-false}
     local filter=cat
     local fmt="%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))"
+    ${sort_by_date} && {
+        # Warning: adding this sort option can hide branches which don't
+        # have fetched remotes. This seems like a bug but perhaps a very deep
+        # reading of the git manual would reveal a rationale?
+        local sort_opt="-r --sort=committerdate"
+    }
     if [[ $# == 0 ]]; then
-        git branch -r --sort=committerdate --format="$fmt"
+        git branch -a ${sort_opt} --format="$fmt"
     else
-        git branch -r --sort=committerdate --format="$fmt" | grep -E "$@"
+        git branch -a ${sort_opt} --format="$fmt" | grep -E "$@"
     fi
     set +f
 }
@@ -166,6 +173,7 @@ if [[ -n $PS1 ]]; then
     alias gap='git add -p'
     alias gb='git branch -vv'
     alias gba='set -f; git_branches_all'
+    alias gbr='set -f; git_branches_all'
     alias gpa='git_commit_sync'
     alias gpu='git push -u'
 
@@ -183,6 +191,7 @@ if [[ -n $PS1 ]]; then
         complete -F _complete_alias gco
         complete -F _complete_alias gb
         complete -F _complete_alias gba
+        complete -F _complete_alias gbr
         complete -F _complete_alias gpu
 
     fi
