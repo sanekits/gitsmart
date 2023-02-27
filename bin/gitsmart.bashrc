@@ -173,7 +173,7 @@ if [[ -n $PS1 ]]; then
     alias gap='git add -p'
     alias gb='git branch -vv'
     alias gba='set -f; git_branches_all'
-    alias gbr='set -f; git_branches_all'
+    alias gbr='set -f; SortByDate=true git_branches_all'
     alias gpa='git_commit_sync'
     alias gpu='git push -u'
 
