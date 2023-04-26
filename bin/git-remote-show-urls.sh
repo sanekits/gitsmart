@@ -20,7 +20,7 @@ translate_entry_url() {
 
 main() {
     command -V git &>/dev/null || die "No git installed"
-    local branch=$(git symbolic-ref --short HEAD)
+    local branch=$(git symbolic-ref --short HEAD 2>/dev/null)
     while read remote_name entry mode; do
         echo "$remote_name $entry" | match_subst_urls
     done < <( command git remote -v | command grep -E '\(fetch\)' )
