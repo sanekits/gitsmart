@@ -185,6 +185,7 @@ if [[ -n $PS1 ]]; then
     alias glm=git_log_more
     alias grv=git_remote_view
     alias glc='git-log-compact --decorate'
+    alias ggr='git log --graph --oneline'
     alias grvh='git-reset-very-hard.sh'
     #help Reset working-copy and delete untracked files
     if type -t _complete_alias &>/dev/null; then
@@ -193,6 +194,7 @@ if [[ -n $PS1 ]]; then
         complete -F _complete_alias gba
         complete -F _complete_alias gbr
         complete -F _complete_alias gpu
+        complete -F _complete_alias ggr
 
     fi
 fi
