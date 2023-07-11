@@ -195,6 +195,8 @@ if [[ -n $PS1 ]]; then
         complete -F _complete_alias gbr
         complete -F _complete_alias gpu
         complete -F _complete_alias ggr
+        complete -F _complete_alias git-merge-safe
+        complete -F _complete_alias gms
 
     fi
 fi
