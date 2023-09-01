@@ -225,4 +225,7 @@ alias git-merge-safe='git merge --no-ff --no-commit'
 #help Merge without commit or fast-forward
 alias gms=git-merge-safe
 
+alias git-wc-map='git-wc-map.mk map'
+#help Map all git working copies under current directory
+
 true

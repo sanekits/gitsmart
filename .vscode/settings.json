@@ -23,7 +23,6 @@
         "terminalCursor.foreground": "#A5A2A2",
         "window.activeBorder": "#00ff00",
         "window.inactiveBorder": "#ff0000",
-        "activityBar.background": "#342E0F",
         "titleBar.activeBackground": "#484015",
         "titleBar.activeForeground": "#FCFAF3"
     }
