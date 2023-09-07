@@ -93,7 +93,7 @@ do_gitstatus() {
 
 canonicalize_dir() {
     [[ -n "$@" ]] || return
-    ( cd -- "$@" && readlink -f "$PWD" )
+    ( cd -- "$@" 2>/dev/null && readlink -f "$PWD" )
 }
 
 foreach_dir() {
