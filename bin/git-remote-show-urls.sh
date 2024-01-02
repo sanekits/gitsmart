@@ -1,10 +1,16 @@
 #!/bin/bash
 # git-remote-show-urls.sh
 
+scriptName="$(readlink -f "$0")"
+scriptDir=$(command dirname -- "${scriptName}")
+
+FILE_ARGS=()
+
 die() {
-    echo "ERROR: $*" >&2
-    exit 1
+    builtin echo "ERROR($(basename ${scriptName})): $*" >&2
+    builtin exit 1
 }
+
 
 match_subst_urls() {
     # match entries are [pattern] [result]
@@ -14,15 +20,46 @@ match_subst_urls() {
         -e 's% bbgithub:% https://bbgithub.dev.bloomberg.com/%'
 }
 
-translate_entry_url() {
-    echo "xlat[$1]"
+append_file_args() {
+    [[ ${#FILE_ARGS[@]} -eq 0 ]] && {
+        cat
+        return
+    }
+    local gitroot=$(git rev-parse --show-toplevel 2>/dev/null)
+    [[ -n "$gitroot" ]] || die 19
+    local root_start=$(( ${#gitroot} + 1 ))
+    while read line; do
+        for file_arg in ${FILE_ARGS[@]}; do
+            local rel_path=$(readlink -f $file_arg | cut -c ${root_start}- )
+            echo "${line}${rel_path}"
+        done
+    done
+}
+
+transform_entry() {
+    local branch="$1"
+    local remote_name="$2"
+    local host_entry="$3"
+
+    # Transform sequence:
+    #   1.  Replace ssh host entries with https (match_subst_urls())
+    #   2.  Trim off any trailing '.git' for the repo name
+    #   3.  Append the tree/<branch> suffix (append_file_args())
+    echo "$remote_name $host_entry" \
+        | match_subst_urls  \
+        | sed -e "s,\.git\$,," -e "s,\$,/tree/$branch," \
+        | append_file_args
+
 }
 
 main() {
     command -V git &>/dev/null || die "No git installed"
+
+    FILE_ARGS=( "$@" )
+
     local branch=$(git symbolic-ref --short HEAD 2>/dev/null)
     while read remote_name entry mode; do
-        echo "$remote_name $entry" | match_subst_urls
+        transform_entry "$branch" "$remote_name" "$entry"
     done < <( command git remote -v | command grep -E '\(fetch\)' )
 }
 
