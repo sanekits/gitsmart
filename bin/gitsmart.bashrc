@@ -218,6 +218,11 @@ gitgrep_t() {
     set +f
 }
 
+alias gitgrep_t_all='gitgrep-all.sh --text'
+#help Search for text, recursing through multiple working copies
+alias gitgrep_f_all='gitgrep-all.sh --file'
+#help Search for filename, recursing through multiple working copies
+
 alias gitg='set -f; gitgrep_f'
 #help Search filenames in git for pattern $@
 
