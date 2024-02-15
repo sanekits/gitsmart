@@ -34,9 +34,7 @@ die() {
 setup_vim_for_git() {
     (
         set -ue
-        git config --global --list | grep -qE '.*core.editor.*vim' || {
-            git config --global core.editor vim
-        }
+        git config --global core.editor vim
     ) || {
         echo "WARNING: setup_vim_for_git() failed in $scriptDir/$scriptName" >&2
         false
