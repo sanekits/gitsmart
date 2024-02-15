@@ -1,11 +1,16 @@
 #!/bin/bash
-# gitgrep_all.sh <pattern> [dir [dir..]] --f|--file --t|--text
-#
-#  Recursively search working copies of root dirs specified.
-#  Mode is --file (match name) or --text (match text)
-#
-#  Options:
-#    -f, --file:  search for file by name
+
+do_help() {
+    cat <<-"EOF"
+gitgrep_all.sh "<pattern>" [dir [dir..]] --f|--file --t|--text
+
+Recursively search working copies of root dir(s) specified.
+
+Options:
+    -f, --file:  search for file by name
+    -t, --text:  search for text in files
+EOF
+}
 
 scriptName="$(readlink -f "$0")"
 scriptDir=$(command dirname -- "${scriptName}")
@@ -26,6 +31,7 @@ parseArgs() {
         case $1 in
             -t|--text) SearchMode=TEXT ;;
             -f|--file) SearchMode=FILE ;;
+            -h|--help) do_help; exit ;;
             -*) die "Unknown switch: $1" ;;
             *)
                 [[ -z "$Pattern" ]] && {
