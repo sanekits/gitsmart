@@ -52,15 +52,21 @@ do_search() {
     local mode="$3"
     (
         cd $top || die "Can't cd into $top"  # We want an error, but not a script termination
-        case $mode in
-            TEXT)
-                gitgrep_t "${Pattern}" | sed "s,^,${top}/,"
-                ;;
-            FILE)
-                gitgrep_f "${Pattern}" | sed "s,^,${top}/,"
-                ;;
-            *) die Error 119
-        esac
+        while read git_cur; do
+            (
+                wc_cur=$(dirname ${git_cur})
+                cd $wc_cur || die "Can't cd to $PWD/$wc_cur"
+                case $mode in
+                    TEXT)
+                        gitgrep_t "${Pattern}" | sed "s,^,${PWD}/,"
+                        ;;
+                    FILE)
+                        gitgrep_f "${Pattern}" | sed "s,^,${PWD}/,"
+                        ;;
+                    *) die Error 119
+                esac
+            )
+        done < <( find -type d -name .git 2>/dev/null )
     )
 }
 
