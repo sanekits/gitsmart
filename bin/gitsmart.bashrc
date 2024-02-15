@@ -131,11 +131,14 @@ git_commit_sync() {
         && kargs+=( "--edit" )
 
     command git commit ${kargs[@]} -m "${msg}"
-    [[ $? -eq 0 ]] && result=true || result=false
+    [[ $? -eq 0 ]] && result=true || {
+        result=false
+        record_event=false
+    }
     $result \
         && { command git push || result=false ; }
     $record_event \
-        && history -s "[gpa] git_commit_sync \"$msg\" #$(git rev-parse --short=9 HEAD) from $(git-find-root)"
+        && history -s "git_commit_sync \"$msg\" #$(git rev-parse --short=9 HEAD) from $(git-find-root)"
     $result
 }
 
