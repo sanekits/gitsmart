@@ -5,6 +5,13 @@ gitsmart-semaphore() {
 }
 
 
+function gitsmart_yellow {
+    echo -en "\033[;33m" >&2
+    echo "$@" >&2
+    echo -en "\033[;0m" >&2
+}
+
+
 git-find-root() {
     #help Shows the root path for current repo
     command git rev-parse --show-toplevel 2>/dev/null
@@ -94,11 +101,11 @@ git_do_recursive() {
     local line;
     while read line; do
         if [[ $line == .git ]]; then
-            yellow "GDR in: $(pwd -P)"; echo
+            gitsmart_yellow "GDR in: $(pwd -P)"; echo
             $@;
         else
             pushd $(dirname -- $line) &> /dev/null;
-            yellow "GDR cd to: $(dirname -- $line)"; echo
+            gitsmart_yellow "GDR cd to: $(dirname -- $line)"; echo
             $@;
             popd &> /dev/null;
         fi;
