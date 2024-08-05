@@ -46,7 +46,9 @@ parseArgs() {
         esac
         shift
     done
-    [[ ${#TopDirs[@]} -eq 0 ]] && TopDirs=( $PWD )
+    [[ ${#TopDirs[@]} -eq 0 ]] && {
+        TopDirs=( $(git rev-parse --show-toplevel) )
+    }
 }
 
 # DEPENDENCY: We need gitgrep_t() and gitgrep_f() from gitsmart.bashrc:
