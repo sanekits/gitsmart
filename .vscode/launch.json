@@ -5,14 +5,26 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "gitgrep-all.sh --text [pat]",
             "type": "bashdb",
             "request": "launch",
-            "name": "gitgrep-all.sh --text [pat]",
             "program": "${workspaceFolder}/bin/gitgrep-all.sh",
             "cwd":"/bb-shellkit.workspace.git/inc",
             "args":[
                 "--text",
                 "chosen-kits"
+            ]
+        },
+        {
+            "name": "git-wc-inventory /",
+            "type": "bashdb",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/git-wc-inventory",
+            "terminalKind": "integrated",
+            "cwd":"/",
+            "args":[
+                "--depth",
+                "2"
             ]
         }
     ]
