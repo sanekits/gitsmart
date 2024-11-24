@@ -26,6 +26,14 @@
                 "--depth",
                 "2"
             ]
+        },
+        {
+            "name": "gurl",
+            "type":"bashdb",
+            "request": "launch",
+            "terminalKind": "integrated",
+            "cwd":"/root/gist-edit/std::format-vs-libfmt-dev",
+            "program": "${workspaceFolder}/bin/git-remote-show-urls.sh"
         }
     ]
 }

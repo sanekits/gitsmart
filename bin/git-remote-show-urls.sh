@@ -36,6 +36,18 @@ append_file_args() {
     done
 }
 
+append_tree_branch() {
+    # Append the tree/<branch> suffix if the URL is not a gist:
+    local branch="$1"
+    while read line; do
+        if [[ "${line}" == */gist/* ]]; then
+            echo "${line}"
+            continue
+        fi
+        echo "${line}" | sed -e "s,\$,/tree/$branch," 
+    done
+}
+
 transform_entry() {
     local branch="$1"
     local remote_name="$2"
@@ -44,10 +56,12 @@ transform_entry() {
     # Transform sequence:
     #   1.  Replace ssh host entries with https (match_subst_urls())
     #   2.  Trim off any trailing '.git' for the repo name
-    #   3.  Append the tree/<branch> suffix (append_file_args())
+    #   3.  Append the tree/<branch> suffix 
+    #   4.  append_file_args()
     echo "$remote_name $host_entry" \
         | match_subst_urls  \
-        | sed -e "s,\.git\$,," -e "s,\$,/tree/$branch," \
+        | sed -e "s,\.git\$,," \
+        | append_tree_branch "$branch" \
         | append_file_args
 
 }
