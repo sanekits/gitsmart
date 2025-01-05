@@ -9,7 +9,7 @@
 #   - Use --wc-list to just print the canonicalized/unique working copy list
 
 scriptName="$(readlink -f "$0")"
-scriptDir=$(command dirname -- "${scriptName}")
+#scriptDir=$(command dirname -- "${scriptName}")
 PS4='+$?(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 die() {
@@ -33,7 +33,7 @@ stub() {
 colorsinit() {
     local enable=$1
     if $enable; then
-        HasTerminal=true
+        
         function ttyEx {
             local cmd='script -qefc "$@" /dev/null'
             eval "$cmd"
@@ -44,9 +44,9 @@ colorsinit() {
             echo -en "\033[;0m"
         }
     else
-        HasTerminal=false
+        #HasTerminal=false
         function ttyEx {
-            eval "bash -c \"$@\""
+            eval bash -c "$*"
         }
         function yellow {
             echo "$@"
@@ -75,7 +75,8 @@ VisitedDirs=  # Colon-delimited+canonicalized, to prevent dupes
 visitedMunge ()
 {
     [[ -n "$1" ]] || return;  # Return false because no arg provided
-    local wc_root=$(cd "$1" && git_find_root )
+    local wc_root
+    wc_root=$(cd "$1" && git_find_root )
     case ":${VisitedDirs}:" in
         *:"${wc_root}":*) false; return ;;  # Return false because this dir is nothing new
         *)
@@ -92,7 +93,7 @@ do_gitstatus() {
 }
 
 canonicalize_dir() {
-    [[ -n "$@" ]] || return
+    [[ -n "$*" ]] || return
     ( cd -- "$@" 2>/dev/null && readlink -f "$PWD" )
 }
 
@@ -100,7 +101,8 @@ foreach_dir() {
     local dispatchTo="$1"; shift
 
     for thisDir in "$@"; do
-        local c_path="$(canonicalize_dir ${thisDir})"
+        local c_path
+        c_path="$(canonicalize_dir "${thisDir}")"
         [[ -n "$c_path" ]] || continue
         if visitedMunge "$c_path"; then
             $dispatchTo "$c_path"
@@ -119,7 +121,10 @@ do_nothing() {
     wc_list_only=false # --wc-list option
 
     # Default ansi color handling:
-    [[ -t 1 ]] && colorsinit true || colorsinit false;
+    colorsinit false
+    if [[ -t 1 ]]; then 
+        colorsinit true 
+    fi
     pageinit
 
     while [[ -n $1 ]]; do
@@ -128,7 +133,7 @@ do_nothing() {
             --nocolor) colorsinit false;;
             --wc-list) wc_list_only=true;;
             *)
-                RawDirs+=( $1 );;
+                RawDirs+=( "$1" );;
         esac
         shift
     done
