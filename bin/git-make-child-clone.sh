@@ -7,7 +7,7 @@
 #  Destination dir can be command line argument, defaults to /tmp/{orig-basename}
 #
 #
-SCRIPT=$(basename $(readlink -f -- $0))
+#SCRIPT=$(basename $(readlink -f -- $0))
 
 do_reset=false
 
@@ -17,7 +17,7 @@ die() {
 }
 
 readymsg() {
-    local parent=$1
+    #local parent=$1
     local dest=$2
     local branch=$3
 
@@ -48,7 +48,7 @@ statusmsg() {
 }
 
 do_help() {
-    echo "$(basename $0) <destination-dir> {--reset}"
+    echo "$(basename "$0") <destination-dir> {--reset}"
     echo "   -> If destination-dir not specified, a temp dir is created."
     echo "   -> Remove and rewrite destination dir with --reset (DANGER)"
 }
@@ -87,7 +87,8 @@ main() {
     parseArgs "$@"
 
     [[ -d .git ]] || die "No .git in this dir"
-    local branch=$(git symbolic-ref HEAD --short)
+    local branch
+    branch=$(git symbolic-ref HEAD --short)
 
     $do_reset && {
         [[ -d "$DEST_DIR" ]] && {
@@ -96,17 +97,17 @@ main() {
         }
     }
 
-    command mkdir -p $DEST_DIR
+    command mkdir -p "$DEST_DIR"
     [[ -d $DEST_DIR ]] || die 102
 
     [[ -d ${DEST_DIR}/.git ]] && {
-        readymsg "$SOURCE_ROOT_DIR" "$DEST_DIR" ${branch};
+        readymsg "$SOURCE_ROOT_DIR" "$DEST_DIR" "${branch}"
         echo "Destination already exists."
         exit 0;
     }
-    DEST_DIR="$(readlink -f $DEST_DIR)"
+    DEST_DIR="$(readlink -f "$DEST_DIR")"
 
-    builtin cd $DEST_DIR || die 103
+    builtin cd "$DEST_DIR" || die 103
 
     command git clone  "$SOURCE_ROOT_DIR" . || die "Failed cloning $SOURCE_ROOT_DIR"
 
@@ -117,8 +118,8 @@ main() {
     command git fetch parent
 
     [[ -n $branch ]] && {
-        command git checkout ${branch}
-        command git branch -u parent/${branch}
+        command git checkout "${branch}"
+        command git branch -u "parent/${branch}"
     }
 
     statusmsg "$DEST_DIR"

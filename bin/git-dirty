@@ -32,7 +32,7 @@ function git_status_dirty {
 
 if [[ -z $sourceMe ]]; then
     [[ $# -eq 0 ]] && {
-        set -- $PWD
+        set -- "$PWD"
     }
     for xdir; do
         if git_status_dirty "$xdir"; then
