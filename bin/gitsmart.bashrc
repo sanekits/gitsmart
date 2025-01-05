@@ -162,6 +162,8 @@ source "${LmHome}.local/bin/gitsmart/git-completion.bash" &>/dev/null
 which tig &>/dev/null && {
     # Canonical source:
     # https://github.com/git/git/blob/master/contrib/completion/git-completion.bash
+    export TIGRC_USER
+    TIGRC_USER=${TIGRC_USER:-"${LmHome}/.local/bin/gitsmart/tigrc-gitsmart"}
     #shellcheck disable=SC1091
     source "${LmHome}/.local/bin/gitsmart/tig-completion.bashrc"
 }
