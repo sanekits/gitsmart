@@ -66,13 +66,13 @@ alias gurl=git_show_urls
 git_attributes_init() {
     [[ -d .git ]] || return "$(errExit No .git/ here)"
     [[ -f .gitattributes ]] && return "$(errExit "Already has a .gitattributes here")"
-    cp ${HOME}/bin/gitattributes-template .gitattributes || return $(errExit failed to create .gitattributes)
+    cp "${HOME}/bin/gitattributes-template" .gitattributes || return "$(errExit failed to create .gitattributes)"
     echo ".gitattributes added to $PWD"
 }
 
 git_branch_diff_file() {
     # Compare one or more local files with peers on branch $GbrDiff, e.g. "GbrDiff=feature/br1 git_branch_diff_file README.md hello.cpp"
-    [[ -z $GbrDiff ]] && return $(errExit "No \$GbrDiff set. Try GbrDiff=name/of/reference/branch")
+    [[ -z $GbrDiff ]] && return "$(errExit "No \$GbrDiff set. Try GbrDiff=name/of/reference/branch")"
     for file in "$@"; do
         echo "Diff for ${file} vs ${GbrDiff}:${file} -> "
         vimdiff ${file} <(git show ${GbrDiff}:${file})
@@ -106,10 +106,10 @@ git_do_recursive() {
             gitsmart_yellow "GDR in: $(pwd -P)"; echo
             "$@"
         else
-            pushd $(dirname -- $line) &> /dev/null;
-            gitsmart_yellow "GDR cd to: $(dirname -- $line)"; echo
-            "$@";
-            popd &> /dev/null;
+            pushd "$(dirname -- $line)" &> /dev/null && {
+                gitsmart_yellow "GDR cd to: $(dirname -- $line)"; echo "$@";
+                popd &> /dev/null;
+            }
         fi;
     done < <( command ls -d */.git)
 }
