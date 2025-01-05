@@ -13,12 +13,14 @@
 gitsmart.sh
 git-dirty # Exit 0 if any dir in arglist is dirty
 gitgrep-all.sh # Search recursively for --text or --file
-git-make-child-clone.sh
-git-remote-show-urls.sh
-git-wc-inventory
-git-wc-inventory-mark-done
+git-make-child-clone.sh # Make temp clones for maintenance convenience
+git-cherry-pick-list.sh # Pick a series of commits with edit pauses
+git-find-root # Find the root of a git repo
+git-remote-show-urls.sh # Show the URLs for all remotes
+git-wc-inventory # Scan through all git working copies under current dir for status
+git-wc-inventory-mark-done # Mark a git working copy as done when scanning
 gitsmart-help.sh
-git-log-compact
+git-log-compact # Compact git log output
 git-reset-very-hard.sh  # Reset to ref=\$1 and delete untracked files
 git-status-bulk.sh # Show git-status for a series of dirs, with de-dupe
 git-wc-map.mk # Map all of the git working copies under current dir
