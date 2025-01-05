@@ -1,6 +1,8 @@
 #!/bin/bash
 # gitsmart.bashrc - shell init file for gitsmart sourced from ~/.bashrc
 
+
+LmHome=${LmHome:-${HOME}}
 gitsmart-semaphore() {
     [[ 1 -eq  1 ]]
 }
@@ -29,16 +31,18 @@ parse_git_branch() {
 
 git_commit_review() {
     #help Review commits before adding to index
-    ( command which code && command code -s | command grep -q Version ) &>/dev/null
-    [[ $? -ne 0 ]] && {
+    if ( ! command which code && command code -s | command grep -q Version ) &>/dev/null; then
+        command code -s
+    fi
+    if [[ $? -ne 0 ]]; then
         echo "Sorry, vscode not running."; false; return;
-    }
+    fi
     (
         command code changes;
     )
     command git add .
     command git diff --cached
-    builtin read -n 1 -p "Commit now with ~/changes as message? [y/N]: "
+    builtin lead -rn 1 -p "Commit now with ~/changes as message? [y/N]: "
     if [[ $REPLY =~ [yY] ]]; then
         command git commit -F ~/changes
     fi
@@ -107,8 +111,8 @@ git_do_recursive() {
             "$@"
         else
             pushd "$(dirname -- $line)" &> /dev/null && {
-                gitsmart_yellow "GDR cd to: $(dirname -- $line)"; echo "$@";
-                popd &> /dev/null;
+                gitsmart_yellow "GDR cd to: $(dirname -- "$line")"; echo "$@";
+                popd &> /dev/null || :
             }
         fi;
     done < <( command ls -d */.git)
@@ -133,7 +137,7 @@ git_commit_sync() {
         shift
     done
     if [[ ${#fwdArgs} -gt 0 ]]; then
-        msg="${fwdArgs[@]}"
+        msg="${fwdArgs[*]}"
     fi
     local kargs=( "-a" )
     $edit_commit_msg \
