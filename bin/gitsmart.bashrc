@@ -1,3 +1,4 @@
+#!/bin/bash
 # gitsmart.bashrc - shell init file for gitsmart sourced from ~/.bashrc
 
 gitsmart-semaphore() {
@@ -46,8 +47,9 @@ alias gcr='git_commit_review'
 
 git_remote_show() {
     #help Show all remotes
-    local allremotes="$(command git remote show)"
-    local remotes="$@"
+    local allremotes
+    allremotes="$(command git remote show)"
+    local remotes="$*"
     remotes=${remotes:-${allremotes}}  # Get all remotes if caller doesn't specify
     command git remote show ${remotes}
     printf " ------------\nRepo root is:\n"
@@ -62,8 +64,8 @@ alias gurl=git_show_urls
 #help Show URLs for this repo
 
 git_attributes_init() {
-    [[ -d .git ]] || return $(errExit No .git/ here)
-    [[ -f .gitattributes ]] && return $(errExit Already has a .gitattributes here)
+    [[ -d .git ]] || return "$(errExit No .git/ here)"
+    [[ -f .gitattributes ]] && return "$(errExit "Already has a .gitattributes here")"
     cp ${HOME}/bin/gitattributes-template .gitattributes || return $(errExit failed to create .gitattributes)
     echo ".gitattributes added to $PWD"
 }
@@ -99,14 +101,14 @@ git_remote_view() {
 
 git_do_recursive() {
     local line;
-    while read line; do
+    while read -r line; do
         if [[ $line == .git ]]; then
             gitsmart_yellow "GDR in: $(pwd -P)"; echo
-            $@;
+            "$@"
         else
             pushd $(dirname -- $line) &> /dev/null;
             gitsmart_yellow "GDR cd to: $(dirname -- $line)"; echo
-            $@;
+            "$@";
             popd &> /dev/null;
         fi;
     done < <( command ls -d */.git)
@@ -137,7 +139,7 @@ git_commit_sync() {
     $edit_commit_msg \
         && kargs+=( "--edit" )
 
-    command git commit ${kargs[@]} -m "${msg}"
+    command git commit "${kargs[@]}" -m "${msg}"
     [[ $? -eq 0 ]] && result=true || {
         result=false
         record_event=false
@@ -149,14 +151,12 @@ git_commit_sync() {
     $result
 }
 
-if $isBash; then
-    source ${LmHome}/bin/git-completion.bash &>/dev/null
-fi
+source ${LmHome}/bin/git-completion.bash &>/dev/null
 
 git_branches_all() {
     # Show branches sorted by date (newest last).  If args are provided, we'll pass them as a pattern to grep
     local sort_by_date=${SortByDate:-false}
-    local filter=cat
+
     local fmt="%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))"
     ${sort_by_date} && {
         # Warning: adding this sort option can hide branches which don't
@@ -165,9 +165,9 @@ git_branches_all() {
         local sort_opt="-r --sort=committerdate"
     }
     if [[ $# == 0 ]]; then
-        git branch -a ${sort_opt} --format="$fmt"
+        git branch -a "${sort_opt}" --format="$fmt"
     else
-        git branch -a ${sort_opt} --format="$fmt" | grep -E "$@"
+        git branch -a "${sort_opt}" --format="$fmt" | grep -E "$@"
     fi
     set +f
 }
@@ -219,7 +219,7 @@ gitgrep_f() {
 
 gitgrep_t() {
     # Find files in git repo matching text pattern $@
-    while read file; do
+    while read -r file; do
         grep -snE "$@" "${file}" | sed "s%^%${file}#%"
     done < <(git ls-files .)
     set +f
