@@ -155,7 +155,16 @@ git_commit_sync() {
     $result
 }
 
-source ${LmHome}/bin/git-completion.bash &>/dev/null
+# Canonical source: https://raw.githubusercontent.com/git/git/refs/heads/master/contrib/completion/git-completion.bash
+#shellcheck disable=SC1090
+source "${LmHome}.local/bin/gitsmart/git-completion.bash" &>/dev/null
+
+which tig &>/dev/null && {
+    # Canonical source:
+    # https://github.com/git/git/blob/master/contrib/completion/git-completion.bash
+    #shellcheck disable=SC1091
+    source "${LmHome}/.local/bin/gitsmart/tig-completion.bashrc"
+}
 
 git_branches_all() {
     # Show branches sorted by date (newest last).  If args are provided, we'll pass them as a pattern to grep
