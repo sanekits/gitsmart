@@ -110,10 +110,10 @@ do_inventory() {
             mkdir -p /tmp/git-inventory-$$ 
             wc_listfile=/tmp/git-inventory-$$/git-inventory; 
         fi
-        touch $wc_listfile
+        touch "$wc_listfile"
         echo -e "do_inventory>>\t$PWD"
         [[ -z $wcfile ]] && {
-            make_wc_listing "$top_dir" | tee $wc_listfile
+            make_wc_listing "$top_dir" | tee "$wc_listfile"
             echo "Project list written to $wc_listfile" >&2
         }
         $wcfile_only && exit 0

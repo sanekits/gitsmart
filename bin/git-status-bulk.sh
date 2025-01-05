@@ -13,7 +13,7 @@ scriptName="$(readlink -f "$0")"
 PS4='+$?(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 die() {
-    builtin echo "ERROR($(basename ${scriptName})): $*" >&2
+    builtin echo "ERROR($(basename "${scriptName}")): $*" >&2
     builtin exit 1
 }
 
@@ -24,7 +24,7 @@ stub() {
     [[ -n $NoStubs ]] && return
     [[ -n $__stub_counter ]] && (( __stub_counter++  )) || __stub_counter=1
     {
-        builtin printf "  <=< STUB(%d:%s)" $__stub_counter "$(basename $scriptName)"
+        builtin printf "  <=< STUB(%d:%s)" "$__stub_counter" "$(basename "$scriptName")"
         builtin printf "[%s] " "$@"
         builtin printf " >=> \n"
     } >&2
