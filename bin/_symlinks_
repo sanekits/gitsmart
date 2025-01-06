@@ -24,3 +24,4 @@ git-log-compact # Compact git log output
 git-reset-very-hard.sh  # Reset to ref=\$1 and delete untracked files
 git-status-bulk.sh # Show git-status for a series of dirs, with de-dupe
 git-wc-map.mk # Map all of the git working copies under current dir
+git-code-diff-wrapper.sh # Use this for git merge / diff wrapper
