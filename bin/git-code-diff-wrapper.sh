@@ -14,10 +14,10 @@ die() {
 
 main() {
     local xcode
-    {
+    if $DEBUG_GIT_WRAPPER; then
         echo "git passed $# args to wrapper:"
         printf "  %s\n" "$@"
-    } >&2
+    fi >&2
     xcode=$(which code-server code | head -n 1)
     [[ -z ${xcode} ]] && {
         run_terminal_editor "$@"
