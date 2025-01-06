@@ -169,11 +169,10 @@ which tig &>/dev/null && {
 if [[ -z $GIT_EDITOR ]] && which code-server code &>/dev/null; then
     git_editor_code=$(command which code-server code | head -n 1)
     
-    export GIT_EDITOR GIT_MERGE_TOOL GIT_MERGETOOL_CMD GIT_EXTERNAL_DIFF
+    export GIT_EDITOR GIT_MERGE_TOOL GIT_EXTERNAL_DIFF
     GIT_EXTERNAL_DIFF=git-code-diff-wrapper.sh 
     GIT_EDITOR="$git_editor_code --wait"
     GIT_MERGE_TOOL="git-code-diff-wrapper.sh"
-    #GIT_MERGETOOL_CMD="$git_editor_code --wait --merge \$BASE \$LOCAL \$REMOTE \$MERGED"
     unset git_editor_code
 fi
 
