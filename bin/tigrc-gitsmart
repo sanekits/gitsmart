@@ -180,6 +180,8 @@ set mouse-scroll		= 3		# Number of lines to scroll via the mouse
 #   %(prompt)		Prompt for the argument value.
 
 bind main	C	?git checkout %(commit)
+bind main	P	?git cherry-pick %(commit)
+bind main   p   ?git cherry-pick %(commit) --no-commit
 bind status	C	!git commit
 bind stash	A	?git stash apply %(stash)
 bind stash	P	?git stash pop %(stash)
