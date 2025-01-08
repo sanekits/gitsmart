@@ -188,9 +188,11 @@ git_branches_all() {
         local sort_opt="-r --sort=committerdate"
     }
     if [[ $# == 0 ]]; then
-        git branch -a "${sort_opt}" --format="$fmt"
+        # shellcheck disable=SC2086
+        git branch -a ${sort_opt} --format="$fmt"
     else
-        git branch -a "${sort_opt}" --format="$fmt" | grep -E "$@"
+        # shellcheck disable=SC2086
+        git branch -a ${sort_opt} --format="$fmt" | grep -E "$@"
     fi
     set +f
 }
