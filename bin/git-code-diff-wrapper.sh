@@ -1,8 +1,11 @@
 #!/bin/bash
 # git-code-diff-wrapper.sh
 
+PS4='\033[0;33m+$?( $( set +u; [[ -z "$BASH_SOURCE" ]] || realpath "${BASH_SOURCE[0]}"):${LINENO} ):\033[0m ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+
 scriptName="$(readlink -f "$0")"
 scriptBase=$(basename -- "${scriptName}")
+
 
 DEBUG_GIT_WRAPPER=${DEBUG_GIT_WRAPPER:-false}
 
@@ -11,20 +14,17 @@ die() {
     builtin exit 1
 }
 
-
 main() {
-    local xcode
     if $DEBUG_GIT_WRAPPER; then
         echo "git passed $# args to wrapper:"
         printf "  %s\n" "$@"
     fi >&2
-    xcode=$(which code-server code | head -n 1)
-    [[ -z ${xcode} ]] && {
-        run_terminal_editor "$@"
-        exit
-    }
-    echo -e "\033[;33m${scriptBase} DIFF:\033[0m \033[;31m$2\033[0;33m <--> \033[0;32m$5\033[;0m" >&2
-    ${xcode} --wait --diff "$2" "$5"
+    if [[ "$USE_VSCODE" == true ]]; then
+        echo -e "\033[;33m${scriptBase} DIFF:\033[0m \033[;31m$2\033[0;33m <--> \033[0;32m$5\033[;0m" >&2
+        ${GIT_EDITOR} --wait --diff "$2" "$5"
+        return
+    fi
+    "${GIT_EDITOR}" "$@"
 }
 
 [[ -z ${sourceMe} ]] && {

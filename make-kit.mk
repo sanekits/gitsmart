@@ -19,3 +19,15 @@ publish: pre-publish publish-common release-upload release-list
 	cat tmp/draft-url
 	@echo ">>>> publish complete OK. (FINAL)  <<<"
 
+# We have a tree-setup dependency on diff-so-fancy, so that keeps it
+# up-to-date with the upstream source.  The only thing needed is
+# the raw perl script and its lib/ subdir, so we're not putting those
+# into our git tree (see bin/.gitignore)
+tree-setup: tmp/diff-so-fancy.update-semaphore
+tmp/diff-so-fancy.update-semaphore:
+	@
+	rm -rf ${TMPDIR}/diff-so-fancy &>/dev/null || :
+	git clone https://github.com/so-fancy/diff-so-fancy ${TMPDIR}/diff-so-fancy
+	cp ${TMPDIR}/diff-so-fancy/diff-so-fancy bin/diff-so-fancy
+	cp -r ${TMPDIR}/diff-so-fancy/lib bin/
+	touch $@

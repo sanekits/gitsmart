@@ -83,12 +83,37 @@ git_branch_diff_file() {
     done
 }
 
+stub1() {
+    echo "* * * stub1: $@ * * *; hit a key to continue " >&2
+    read -r -n 1 
+}
+
 git_diff_fancy() {
     #help Use diff-so-fancy to view git diff output
-    if which diff-so-fancy &>/dev/null; then
+    local use_vscode=false
+    if [[ -x $GIT_VSCODE_EDITOR ]]; then
+        local expandargs
+        expandargs="$(printf "%s " " " "${@}" " "))"
+        if [[ $expandargs == *" -c "* ]] || [[ $expandargs == *" --code "* ]]; then
+            # Strip -c, --code from args:
+            local fwdargs_str
+            fwdargs_str="${expandargs// -c / }"
+            fwdargs_str="${fwdargs_str// --code / }"
+            
+            #shellcheck disable=SC2086 # we really want raw expansion ... 
+            set -- $fwdargs_str
+            use_vscode=true
+        fi
+    fi
+    if $use_vscode; then
+        USE_VSCODE=true GIT_EDITOR="$GIT_VSCODE_EDITOR" command git diff "$@"
+    elif which diff-so-fancy &>/dev/null; then
         # Use diff-so-fancy and less to magicalize it:
+        stub1 aa
         command git diff --color "$@" | diff-so-fancy | less --tabs=4 -RFXS --pattern '^(Date|added|deleted|modified): '
     else
+        # Plain vanilla diff:
+        stub1 bb
         command git diff --color "$@" | less --tabs=4 -RFXS
     fi
 }
@@ -110,7 +135,7 @@ git_do_recursive() {
             gitsmart_yellow "GDR in: $(pwd -P)"; echo
             "$@"
         else
-            pushd "$(dirname -- $line)" &> /dev/null && {
+            pushd "$(dirname -- "$line")" &> /dev/null && {
                 gitsmart_yellow "GDR cd to: $(dirname -- "$line")"; echo "$@";
                 popd &> /dev/null || :
             }
@@ -166,15 +191,17 @@ which tig &>/dev/null && {
     source "${LmHome}/.local/bin/gitsmart/tig-completion.bashrc"
 }
 
+set -x
 if [[ -z $GIT_EDITOR ]] && which code-server code &>/dev/null; then
-    git_editor_code=$(command which code-server code | head -n 1)
-    
-    export GIT_EDITOR GIT_MERGE_TOOL GIT_EXTERNAL_DIFF
+    GIT_VSCODE_EDITOR=$(command which code-server code | head -n 1)
+    GIT_EDITOR=vim  # If the user requests -c or --code when running a diff, we'll 
+                    # swap out vim for GIT_VSCODE_EDITOR
+
+    export GIT_EDITOR GIT_MERGE_TOOL GIT_EXTERNAL_DIFF GIT_VSCODE_EDITOR
     GIT_EXTERNAL_DIFF=git-code-diff-wrapper.sh 
-    GIT_EDITOR="$git_editor_code --wait"
     GIT_MERGE_TOOL="git-code-diff-wrapper.sh"
-    unset git_editor_code
 fi
+set +x
 
 git_branches_all() {
     # Show branches sorted by date (newest last).  If args are provided, we'll pass them as a pattern to grep
