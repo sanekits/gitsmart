@@ -268,4 +268,13 @@ alias gms=git-merge-safe
 alias git-wc-map='git-wc-map.mk map'
 #help Map all git working copies under current directory
 
+git_inventory() {
+#help Take inventory from the root with interactive shells for each dirty dir
+    builtin pushd / || return
+    (
+        git-wc-inventory -i -s
+    ) || :
+    builtin popd  || :
+}
+
 true
