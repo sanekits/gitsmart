@@ -51,7 +51,8 @@ usage() {
 
 
 main() {
-    PS4='+$?( $(realpath ${BASH_SOURCE[0]}):${LINENO} ): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+    #shellcheck disable=2154
+    PS4='$( _0=$?; exec 2>/dev/null; realpath -- "${BASH_SOURCE[0]:-?}:${LINENO} ^$_0 ${FUNCNAME[0]:-?}()=>" ) '
     set -ue
 
     # Initialize variables

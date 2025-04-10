@@ -9,8 +9,8 @@
 #   - Use --wc-list to just print the canonicalized/unique working copy list
 
 scriptName="$(readlink -f "$0")"
-#scriptDir=$(command dirname -- "${scriptName}")
-PS4='+$?(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+#shellcheck disable=2154
+PS4='$( _0=$?; exec 2>/dev/null; realpath -- "${BASH_SOURCE[0]:-?}:${LINENO} ^$_0 ${FUNCNAME[0]:-?}()=>" ) '
 
 die() {
     builtin echo "ERROR($(basename "${scriptName}")): $*" >&2
