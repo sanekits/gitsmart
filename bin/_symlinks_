@@ -27,3 +27,4 @@ git-status-bulk.sh # Show git-status for a series of dirs, with de-dupe
 git-wc-map.mk # Map all of the git working copies under current dir
 git-code-diff-wrapper.sh # Use this for git merge / diff wrapper
 git-binary-filechange-search.sh # Given a filename and a good commit, find the breakage with diff
+setup-github-auth-wsl.sh # Configur WSL to use Oauth+Windows browser for pushing to github.com

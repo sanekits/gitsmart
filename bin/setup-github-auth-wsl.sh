@@ -2,11 +2,11 @@
 
 install_gcm() {
     # Check if GCM is already installed
-    if ! command -v git-credential-manager-core &>/dev/null; then
+    if ! command -v git-credential-manager &>/dev/null; then
         echo "[*] Installing Git Credential Manager..."
-        wget -q https://aka.ms/gcm/linux-install-source.sh -O gcm-install.sh
-        bash gcm-install.sh
-        rm gcm-install.sh
+        local gcmVer="2.6.1"
+        wget https://github.com/GitCredentialManager/git-credential-manager/releases/latest/download/gcm-linux_amd64.${gcmVer}.deb
+        sudo dpkg -i "gcm-linux_amd64.${gcmVer}.deb"
     else
         echo "[*] Git Credential Manager already installed."
     fi
@@ -15,8 +15,8 @@ install_gcm() {
 configure_git_gcm() {
     # Set Git to use GCM if not already set
     CURRENT_HELPER=$(git config --global credential.helper || echo "")
-    if [[ "$CURRENT_HELPER" != *git-credential-manager-core* ]]; then
-        GCM_PATH=$(command -v git-credential-manager-core)
+    if [[ "$CURRENT_HELPER" != *git-credential-manager* ]]; then
+        GCM_PATH=$(command -v git-credential-manager)
         echo "[*] Configuring Git to use GCM at: $GCM_PATH"
         git config --global credential.helper "$GCM_PATH"
     else
@@ -27,13 +27,13 @@ configure_git_gcm() {
 detect_windows_browser() {
     local browser_path=""
     # Detect preferred Windows browser
-    if [ -x "/mnt/c/Program Files/Google/Chrome/Application/chrome.exe" ]; then
-        browser_path="/mnt/c/Program Files/Google/Chrome/Application/chrome.exe"
-    elif [ -x "/mnt/c/Program Files (x86)/Microsoft/Edge/Application/msedge.exe" ]; then
-        browser_path="/mnt/c/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"
-    else
+    # if [ -x "/mnt/c/Program Files (x86)/Microsoft/Edge/Application/msedge.exe" ]; then
+    #     browser_path="/mnt/c/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"
+    # elif [ -x "/mnt/c/Program Files/Google/Chrome/Application/chrome.exe" ]; then
+    #     browser_path="/mnt/c/Program Files/Google/Chrome/Application/chrome.exe"
+    # else
         browser_path="/mnt/c/Windows/explorer.exe"
-    fi
+#    fi
     echo "$browser_path"
 }
 
