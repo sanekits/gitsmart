@@ -1,19 +1,16 @@
 #!/bin/bash
 # gitsmart.bashrc - shell init file for gitsmart sourced from ~/.bashrc
 
-
 LmHome=${LmHome:-${HOME}}
 gitsmart-semaphore() {
-    [[ 1 -eq  1 ]]
+    [[ 1 -eq 1 ]]
 }
-
 
 function gitsmart_yellow {
     echo -en "\033[;33m" >&2
     echo "$@" >&2
     echo -en "\033[;0m" >&2
 }
-
 
 git-find-root() {
     #help Shows the root path for current repo
@@ -25,20 +22,22 @@ git-find-root() {
 PS1_INCLUDE_GIT_BRANCH=${PS1_INCLUDE_GIT_BRANCH:-true}
 parse_git_branch() {
     if $PS1_INCLUDE_GIT_BRANCH; then
-        command git branch 2> /dev/null | command sed -e '/^[^*]/d' -e 's/* \(.*\)/[\1]/'
+        command git branch 2>/dev/null | command sed -e '/^[^*]/d' -e 's/* \(.*\)/[\1]/'
     fi
-    }
+}
 
 git_commit_review() {
     #help Review commits before adding to index
-    if ( ! command which code && command code -s | command grep -q Version ) &>/dev/null; then
+    if (! command which code && command code -s | command grep -q Version) &>/dev/null; then
         command code -s
     fi
     if [[ $? -ne 0 ]]; then
-        echo "Sorry, vscode not running."; false; return;
+        echo "Sorry, vscode not running."
+        false
+        return
     fi
     (
-        command code changes;
+        command code changes
     )
     command git add .
     command git diff --cached
@@ -54,7 +53,7 @@ git_remote_show() {
     local allremotes
     allremotes="$(command git remote show)"
     local remotes="$*"
-    remotes=${remotes:-${allremotes}}  # Get all remotes if caller doesn't specify
+    remotes=${remotes:-${allremotes}} # Get all remotes if caller doesn't specify
     command git remote show ${remotes}
     printf " ------------\nRepo root is:\n"
     echo "    $(git-find-root)"
@@ -83,6 +82,44 @@ git_branch_diff_file() {
     done
 }
 
+git-next-commit() {
+    #Help Return the commit at offset N from <ref> in linear history (forward/backward/zero).
+
+    local ref="$1"
+    local offset="$2"
+
+    if [[ -z "$ref" || -z "$offset" ]]; then
+        echo "Usage: git-next-commit <ref> <offset>" >&2
+        return 1
+    fi
+
+    if [[ "$offset" -eq 0 ]]; then
+        git rev-parse "$ref"
+    elif [[ "$offset" -lt 0 ]]; then
+        git rev-parse "${ref}~$((-offset))"
+    else
+        git rev-list --ancestry-path --reverse "${ref}..HEAD" | sed -n "${offset}p"
+    fi
+}
+
+_git_next_commit_completions() {
+    # Tab completion for git-next-commit
+    local cur prev
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD - 1]}"
+
+    # Only complete the first argument (the <ref>)
+    if [[ $COMP_CWORD -eq 1 ]]; then
+        local refs
+        refs=$(git for-each-ref --format='%(refname:short)')
+        #shellcheck disable=2207
+        COMPREPLY=($(compgen -W "${refs}" -- "$cur"))
+    fi
+}
+
+complete -F _git_next_commit_completions git-next-commit
+
 git_diff_fancy() {
     #help Use diff-so-fancy to view git diff output
     if which diff-so-fancy &>/dev/null; then
@@ -104,22 +141,23 @@ git_remote_view() {
 }
 
 git_do_recursive() {
-    local line;
+    local line
     while read -r line; do
         if [[ $line == .git ]]; then
-            gitsmart_yellow "GDR in: $(pwd -P)"; echo
+            gitsmart_yellow "GDR in: $(pwd -P)"
+            echo
             "$@"
         else
-            pushd "$(dirname -- $line)" &> /dev/null && {
-                gitsmart_yellow "GDR cd to: $(dirname -- "$line")"; echo "$@";
-                popd &> /dev/null || :
+            pushd "$(dirname -- $line)" &>/dev/null && {
+                gitsmart_yellow "GDR cd to: $(dirname -- "$line")"
+                echo "$@"
+                popd &>/dev/null || :
             }
-        fi;
-    done < <( command ls -d */.git)
+        fi
+    done < <(command ls -d */.git)
 }
 alias gdr=git_do_recursive
 #help Recursive $@ for all child git working copies
-
 
 git_commit_sync() {
     local fwdArgs=()
@@ -129,29 +167,32 @@ git_commit_sync() {
     local result
     while [[ -n "$1" ]]; do
         case "$1" in
-            -e|--edit)  edit_commit_msg=true ;;
-            -n|--no-history) record_event=false;;
-            -h|--help) echo "Commit and push in one step.  -e to edit message, -n to suppress history recording" ; return ;;
-            *)  fwdArgs+=( "$1" )
+        -e | --edit) edit_commit_msg=true ;;
+        -n | --no-history) record_event=false ;;
+        -h | --help)
+            echo "Commit and push in one step.  -e to edit message, -n to suppress history recording"
+            return
+            ;;
+        *) fwdArgs+=("$1") ;;
         esac
         shift
     done
     if [[ ${#fwdArgs} -gt 0 ]]; then
         msg="${fwdArgs[*]}"
     fi
-    local kargs=( "-a" )
-    $edit_commit_msg \
-        && kargs+=( "--edit" )
+    local kargs=("-a")
+    $edit_commit_msg &&
+        kargs+=("--edit")
 
     command git commit "${kargs[@]}" -m "${msg}"
     [[ $? -eq 0 ]] && result=true || {
         result=false
         record_event=false
     }
-    $result \
-        && { command git push || result=false ; }
-    $record_event \
-        && history -s "git_commit_sync \"$msg\" #$(git rev-parse --short=9 HEAD) from $(git-find-root)"
+    $result &&
+        { command git push || result=false; }
+    $record_event &&
+        history -s "git_commit_sync \"$msg\" #$(git rev-parse --short=9 HEAD) from $(git-find-root)"
     $result
 }
 
@@ -168,9 +209,9 @@ which tig &>/dev/null && {
 
 if [[ -z $GIT_EDITOR ]] && which code-server code &>/dev/null; then
     git_editor_code=$(command which code-server code | head -n 1)
-    
+
     export GIT_EDITOR GIT_MERGE_TOOL GIT_EXTERNAL_DIFF
-    GIT_EXTERNAL_DIFF=git-code-diff-wrapper.sh 
+    GIT_EXTERNAL_DIFF=git-code-diff-wrapper.sh
     GIT_EDITOR="$git_editor_code --wait"
     GIT_MERGE_TOOL="git-code-diff-wrapper.sh"
     unset git_editor_code
@@ -196,7 +237,6 @@ git_branches_all() {
     fi
     set +f
 }
-
 
 # Script-worthy git-status: check the branch, parseable output, etc.
 # See-also: git-dirty
@@ -269,12 +309,12 @@ alias git-wc-map='git-wc-map.mk map'
 #help Map all git working copies under current directory
 
 git_inventory() {
-#help Take inventory from the root with interactive shells for each dirty dir
+    #help Take inventory from the root with interactive shells for each dirty dir
     builtin pushd / || return
     (
         git-wc-inventory -i -s
     ) || :
-    builtin popd  || :
+    builtin popd || :
 }
 
 true
