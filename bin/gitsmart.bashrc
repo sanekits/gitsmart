@@ -207,16 +207,6 @@ which tig &>/dev/null && {
     source "${LmHome}/.local/bin/gitsmart/tig-completion.bashrc"
 }
 
-if [[ -z $GIT_EDITOR ]] && which code-server code &>/dev/null; then
-    git_editor_code=$(command which code-server code | head -n 1)
-
-    export GIT_EDITOR GIT_MERGE_TOOL GIT_EXTERNAL_DIFF
-    GIT_EXTERNAL_DIFF=git-code-diff-wrapper.sh
-    GIT_EDITOR="$git_editor_code --wait"
-    GIT_MERGE_TOOL="git-code-diff-wrapper.sh"
-    unset git_editor_code
-fi
-
 git_branches_all() {
     # Show branches sorted by date (newest last).  If args are provided, we'll pass them as a pattern to grep
     local sort_by_date=${SortByDate:-false}
