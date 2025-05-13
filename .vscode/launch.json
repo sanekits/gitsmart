@@ -9,7 +9,7 @@
             "type": "bashdb",
             "request": "launch",
             "program": "${workspaceFolder}/bin/gitgrep-all.sh",
-            "cwd":"/bb-shellkit.workspace.git/inc",
+            "cwd":"/workarea/bb-shellkit.workspace.git/inc",
             "args":[
                 "--text",
                 "chosen-kits"
